@@ -1093,8 +1093,9 @@ int32_t qpnp_vadc_conv_seq_request(struct qpnp_vadc_chip *dev,
 /**
  * qpnp_vadc_check_result() - Performs check on the ADC raw code.
  * @data:	Data used for verifying the range of the ADC code.
+ * @recalib_check:	Recalibration check to ignore result check.
  */
-int32_t qpnp_vadc_check_result(int32_t *data);
+int32_t qpnp_vadc_check_result(int32_t *data, bool recalib_check);
 
 /**
  * qpnp_adc_get_devicetree_data() - Abstracts the ADC devicetree data.
@@ -1511,6 +1512,24 @@ int32_t qpnp_vbat_sns_comp_result(struct qpnp_vadc_chip *dev,
  * returns internal mapped PMIC number and revision id.
  */
 int qpnp_adc_get_revid_version(struct device *dev);
+/**
+ * qpnp_vadc_calib_vref() - Read calibration channel REF_125V/VDD_VADC
+ * @dev:	Structure device for qpnp vadc
+ * @calib_type:	absolute or ratiometric calib type.
+ * returns calibration channel adc code.
+ */
+int32_t qpnp_vadc_calib_vref(struct qpnp_vadc_chip *vadc,
+					enum qpnp_adc_calib_type calib_type,
+					int *calib_data);
+/**
+ * qpnp_vadc_calib_gnd() - Read calibration channel REF_625MV/GND_REF
+ * @dev:	Structure device for qpnp vadc
+ * @calib_type:	absolute or ratiometric calib type.
+ * returns calibration channel adc code.
+ */
+int32_t qpnp_vadc_calib_gnd(struct qpnp_vadc_chip *vadc,
+					enum qpnp_adc_calib_type calib_type,
+					int *calib_data);
 #else
 static inline int32_t qpnp_vadc_read(struct qpnp_vadc_chip *dev,
 				uint32_t channel,
@@ -1649,6 +1668,14 @@ static inline int32_t qpnp_vbat_sns_comp_result(struct qpnp_vadc_chip *dev,
 						int64_t *result)
 { return -ENXIO; }
 static inline int qpnp_adc_get_revid_version(struct device *dev)
+{ return -ENXIO; }
+static int32_t qpnp_vadc_calib_vref(struct qpnp_vadc_chip *vadc,
+					enum qpnp_adc_calib_type calib_type,
+					int *calib_data)
+{ return -ENXIO; }
+static int32_t qpnp_vadc_calib_gnd(struct qpnp_vadc_chip *vadc,
+					enum qpnp_adc_calib_type calib_type,
+					int *calib_data)
 { return -ENXIO; }
 #endif
 
